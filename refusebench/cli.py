@@ -120,6 +120,32 @@ def resume(
 
 
 @app.command()
+def sensitivity(
+    run_dir: Path = typer.Argument(
+        None, help="Path to results/<timestamp>/. Default: most recent run."
+    ),
+):
+    """Leave-one-judge-out reranking using existing raw verdicts. No API cost.
+
+    Recomputes the leaderboard under the baseline (all judges) plus one config
+    per judge dropped. Writes sensitivity.json + sensitivity.png. Useful to
+    quantify how much the headline ranking depends on any single judge.
+    """
+    from .sensitivity import make_sensitivity_plot, run_sensitivity
+
+    run_dir = run_dir or latest_run_dir()
+    if run_dir is None:
+        console.print("[red]No runs found in results/.[/red]")
+        raise typer.Exit(1)
+    report = run_sensitivity(run_dir)
+    plot_path = make_sensitivity_plot(run_dir)
+    console.print(f"[green]Sensitivity plot saved:[/green] {plot_path}")
+    console.print(
+        f"[bold]Max rank shift across all configs: {report['max_rank_shift_overall']}[/bold]"
+    )
+
+
+@app.command()
 def plot(
     run_dir: Path = typer.Argument(
         None, help="Path to a results/<timestamp>/ directory. Default: most recent run."
