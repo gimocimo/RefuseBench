@@ -120,6 +120,32 @@ def resume(
 
 
 @app.command()
+def bootstrap(
+    run_dir: Path = typer.Argument(
+        None, help="Path to results/<timestamp>/. Default: most recent run."
+    ),
+    iterations: int = typer.Option(2000, "--iterations", "-n", help="Bootstrap replicates per model."),
+    seed: int = typer.Option(42, "--seed", help="Bootstrap RNG seed (for reproducibility)."),
+):
+    """Cluster bootstrap CIs at the response level. No API cost.
+
+    Wilson CIs assume per-cell independence, but rules within the same response
+    are correlated. This resamples responses (not cells) with replacement and
+    takes percentile bounds — strictly more appropriate uncertainty estimation.
+    Writes bootstrap.json + leaderboard_bootstrap.png.
+    """
+    from .bootstrap import make_bootstrap_leaderboard_plot, run_bootstrap
+
+    run_dir = run_dir or latest_run_dir()
+    if run_dir is None:
+        console.print("[red]No runs found in results/.[/red]")
+        raise typer.Exit(1)
+    run_bootstrap(run_dir, n_iterations=iterations, seed=seed)
+    plot_path = make_bootstrap_leaderboard_plot(run_dir)
+    console.print(f"[green]Bootstrap leaderboard saved:[/green] {plot_path}")
+
+
+@app.command()
 def sensitivity(
     run_dir: Path = typer.Argument(
         None, help="Path to results/<timestamp>/. Default: most recent run."
