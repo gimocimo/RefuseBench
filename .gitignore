@@ -54,6 +54,10 @@ calibration/calibration_report_*.json
 !calibration/labels.jsonl
 !calibration/.gitkeep
 
+# Transient handoff / review docs (not part of the published benchmark)
+handoff.md
+codex_review_prompt.md
+
 # Test/coverage
 .pytest_cache/
 .coverage
