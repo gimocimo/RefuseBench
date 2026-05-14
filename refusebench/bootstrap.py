@@ -172,8 +172,10 @@ def make_bootstrap_leaderboard_plot(run_dir: Path, out_path: Path | None = None)
     fig, ax = plt.subplots(figsize=(11, max(4.5, 0.5 * len(df))))
     y = np.arange(len(df))
     rates = (df["point"].values * 100).astype(float)
-    err_lo = ((df["point"].values - df["lo"].values) * 100).astype(float)
-    err_hi = ((df["hi"].values - df["point"].values) * 100).astype(float)
+    # Bootstrap CI bounds at point=0 / point=1 can produce floating-point negative
+    # tails on the error distance; matplotlib's errorbar requires non-negative.
+    err_lo = np.maximum(0.0, ((df["point"].values - df["lo"].values) * 100).astype(float))
+    err_hi = np.maximum(0.0, ((df["hi"].values - df["point"].values) * 100).astype(float))
     ax.barh(y, rates, color=colors, alpha=0.85)
     ax.errorbar(
         rates,
