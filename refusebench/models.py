@@ -29,6 +29,18 @@ _global_sem: asyncio.Semaphore | None = None
 _global_sem_limit: int = 30
 
 
+class EmptyResponseError(Exception):
+    """Raised when the API returns a response with no usable completion choice.
+
+    OpenRouter occasionally returns HTTP 200 with an ``{"error": ...}`` body
+    (upstream provider outage, provider-side rate-limit, content filter)
+    instead of a normal completion. The OpenAI SDK parses that into a
+    ChatCompletion object with ``choices=None``. We treat this as transient
+    and let tenacity retry; a persistent failure exhausts retries and lands
+    in failures.json for `refusebench resume` to pick up.
+    """
+
+
 def set_global_concurrency(limit: int) -> None:
     """Set the global cap on in-flight API calls. Call before any chat_completion."""
     global _global_sem, _global_sem_limit
@@ -68,7 +80,12 @@ def prompt_hash(messages: list[dict]) -> str:
     stop=stop_after_attempt(4),
     wait=wait_exponential(multiplier=2, min=2, max=30),
     retry=retry_if_exception_type(
-        (openai.RateLimitError, openai.APITimeoutError, openai.APIConnectionError)
+        (
+            openai.RateLimitError,
+            openai.APITimeoutError,
+            openai.APIConnectionError,
+            EmptyResponseError,
+        )
     ),
     reraise=True,
 )
@@ -96,7 +113,22 @@ async def chat_completion(
         resp = await client.chat.completions.create(**kwargs)
         elapsed = time.monotonic() - t0
 
-    choice = resp.choices[0]
+    # OpenRouter can return HTTP 200 with an error payload instead of a
+    # completion; the SDK then yields choices=None (or, rarely, an empty
+    # list). Surface it as a retryable EmptyResponseError rather than letting
+    # `None[0]` raise an opaque TypeError.
+    choice = resp.choices[0] if resp.choices else None
+    if choice is None or choice.message is None:
+        err = getattr(resp, "error", None)
+        detail = ""
+        if isinstance(err, dict):
+            detail = err.get("message") or json.dumps(err)
+        elif err is not None:
+            detail = str(err)
+        raise EmptyResponseError(
+            f"No completion choice returned for model={model}"
+            + (f": {detail}" if detail else "")
+        )
     text = choice.message.content or ""
     usage = getattr(resp, "usage", None)
     provenance = {

@@ -344,9 +344,7 @@ refusebench calibrate
 git clone https://github.com/gimocimo/RefuseBench.git
 cd RefuseBench
 python -m venv .venv && source .venv/bin/activate
-pip install -e .   # if `refusebench` console-script can't find the package
-                   # from a different CWD, fall back to: pip install .
-                   # (some venv setups don't process editable .pth files)
+pip install -e .
 
 cp .env.example .env
 # edit .env, paste your OpenRouter key
@@ -361,6 +359,16 @@ refusebench run -s dba_latency_gate \
   -m openai/gpt-4o \
   -t 1
 ```
+
+> **Invocation note.** Examples use the `refusebench` console script. If your
+> environment's `refusebench` can't find the package (some venvs don't process
+> editable-install `.pth` files during interpreter startup), run the module
+> form instead — it puts the project root on `sys.path` directly and always
+> uses current source, no install step required:
+>
+> ```bash
+> python -m refusebench.cli run -s dba_latency_gate -m anthropic/claude-sonnet-4.6 -t 1
+> ```
 
 This produces:
 
