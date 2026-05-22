@@ -49,9 +49,13 @@ plots/*.png
 plots/*.svg
 !plots/.gitkeep
 
-# Calibration: gitignore individual reports but track labels.jsonl (small, valuable, version-worthy)
+# Calibration: gitignore individual reports + transient label backups, but track
+# the label sets themselves (small, valuable, version-worthy).
 calibration/calibration_report_*.json
+calibration/labels.jsonl.bak.*
 !calibration/labels.jsonl
+!calibration/labels_disagreement_stratum.jsonl
+!calibration/labels_v0.2_archive.jsonl
 !calibration/.gitkeep
 
 # Transient handoff / review docs (not part of the published benchmark)
