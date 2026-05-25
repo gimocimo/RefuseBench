@@ -1,6 +1,6 @@
 # RefuseBench
 
-<img width="1536" height="1024" alt="RefuseBench" src="https://github.com/user-attachments/assets/bd33a0ae-2a3a-4f13-9674-85e2b619ec7b" />
+<img width="1536" height="1024" alt="RefuseBench" src="assets/banner.webp" />
 
 ---
 
