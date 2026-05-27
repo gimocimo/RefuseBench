@@ -105,13 +105,13 @@ def main() -> None:
     ax.set_axisbelow(True)
 
     # titles — anchored 10% in from the left edge, sitting in the expanded top margin
-    fig.text(0.113, 0.917, "Do frontier LLMs honor the rules under pressure?",
+    fig.text(0.063, 0.917, "Do frontier LLMs honor the rules under pressure?",
              fontsize=25, fontweight="bold", color=INK, ha="left", va="top")
-    fig.text(0.113, 0.860,
+    fig.text(0.063, 0.860,
              "RefuseBench v0.3 — rule-violation rate when a buried policy constraint gets "
              "inconvenient.  Lower is better.",
              fontsize=14.5, color=MUTE, ha="left", va="top")
-    fig.text(0.113, 0.816,
+    fig.text(0.063, 0.816,
              "11 models  ·  10 realistic policy scenarios  ·  330 responses  ·  129 rules",
              fontsize=12.5, color=MUTE, ha="left", va="top")
 
@@ -129,17 +129,17 @@ def main() -> None:
               bbox_to_anchor=(0.999, 0.99))
 
     # footer — two methodology lines (left) + repo URL (right), inside the expanded bottom margin
-    fig.text(0.113, 0.106,
+    fig.text(0.063, 0.106,
              "Judged by a 3-vendor LLM committee · calibrated against 150 blind human "
              "labels (Cohen's κ 0.74–0.79).",
              fontsize=10.5, color=MUTE, ha="left", va="bottom")
-    fig.text(0.113, 0.070,
+    fig.text(0.063, 0.070,
              "All models engaged 90–100% of the time — refusals are not inflating these scores.",
              fontsize=10.5, color=MUTE, ha="left", va="bottom")
-    fig.text(0.887, 0.084, "github.com/gimocimo/RefuseBench",
+    fig.text(0.937, 0.084, "github.com/gimocimo/RefuseBench",
              fontsize=12.5, color=INK, ha="right", va="bottom", fontweight="bold")
 
-    fig.subplots_adjust(left=0.305, right=0.875, top=0.75, bottom=0.165)
+    fig.subplots_adjust(left=0.255, right=0.925, top=0.75, bottom=0.165)
     fig.savefig(OUT, facecolor=BG)
     print(f"wrote {OUT.relative_to(REPO)}")
 
