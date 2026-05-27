@@ -104,14 +104,14 @@ def main() -> None:
     ax.grid(axis="x", color="#e5e7eb", lw=0.9, zorder=0)
     ax.set_axisbelow(True)
 
-    # titles
-    fig.text(0.013, 0.967, "Do frontier LLMs honor the rules under pressure?",
+    # titles — anchored 10% in from the left edge, sitting in the expanded top margin
+    fig.text(0.113, 0.917, "Do frontier LLMs honor the rules under pressure?",
              fontsize=25, fontweight="bold", color=INK, ha="left", va="top")
-    fig.text(0.013, 0.910,
+    fig.text(0.113, 0.860,
              "RefuseBench v0.3 — rule-violation rate when a buried policy constraint gets "
              "inconvenient.  Lower is better.",
              fontsize=14.5, color=MUTE, ha="left", va="top")
-    fig.text(0.013, 0.866,
+    fig.text(0.113, 0.816,
              "11 models  ·  10 realistic policy scenarios  ·  330 responses  ·  129 rules",
              fontsize=12.5, color=MUTE, ha="left", va="top")
 
@@ -128,18 +128,18 @@ def main() -> None:
               handletextpad=0.3, borderpad=0.6, labelcolor=INK,
               bbox_to_anchor=(0.999, 0.99))
 
-    # footer — two methodology lines (left) + repo URL (right)
-    fig.text(0.013, 0.056,
+    # footer — two methodology lines (left) + repo URL (right), inside the expanded bottom margin
+    fig.text(0.113, 0.106,
              "Judged by a 3-vendor LLM committee · calibrated against 150 blind human "
              "labels (Cohen's κ 0.74–0.79).",
              fontsize=10.5, color=MUTE, ha="left", va="bottom")
-    fig.text(0.013, 0.020,
+    fig.text(0.113, 0.070,
              "All models engaged 90–100% of the time — refusals are not inflating these scores.",
              fontsize=10.5, color=MUTE, ha="left", va="bottom")
-    fig.text(0.987, 0.034, "github.com/gimocimo/RefuseBench",
+    fig.text(0.887, 0.084, "github.com/gimocimo/RefuseBench",
              fontsize=12.5, color=INK, ha="right", va="bottom", fontweight="bold")
 
-    fig.subplots_adjust(left=0.205, right=0.975, top=0.80, bottom=0.115)
+    fig.subplots_adjust(left=0.305, right=0.875, top=0.75, bottom=0.165)
     fig.savefig(OUT, facecolor=BG)
     print(f"wrote {OUT.relative_to(REPO)}")
 
