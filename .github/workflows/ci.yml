@@ -1,0 +1,65 @@
+name: CI
+
+# Runs on every push and pull request to main. Fast, no API spend:
+# - validates every scenario YAML loads against the Scenario schema
+# - runs the pytest suite (models / runner / future fixtures)
+# - verifies stratified_analysis.py reproduces the published v0.3 κ
+#
+# If any of these fail, the commit is broken and the README badge goes red.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install package + dev deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Validate every scenario YAML loads
+        run: |
+          python -c "
+          from pathlib import Path
+          from refusebench.scenarios import load_scenario
+          ok = 0
+          for p in sorted(Path('scenarios').glob('*.yaml')):
+              s = load_scenario(p)
+              assert s.id, f'{p.name} has no id'
+              assert s.rules, f'{p.name} has no rules'
+              ok += 1
+              print(f'  ✓ {p.name:<40s} {len(s.rules)} rules')
+          print(f'{ok} scenarios loaded successfully.')
+          "
+
+      - name: Run pytest
+        run: python -m pytest tests/ -v --tb=short
+
+      - name: Verify stratified_analysis.py reproduces published κ
+        run: |
+          OUTPUT=$(python calibration/stratified_analysis.py 2>&1)
+          echo "$OUTPUT"
+          # Headline κ from blind 150-label set, asserted in the published README:
+          #   GPT-5.5 0.79, Gemini 0.79, Opus 0.74
+          echo "$OUTPUT" | grep -E "openai/gpt-5\.5.*0\.79"
+          echo "$OUTPUT" | grep -E "google/gemini-3\.1-pro-preview.*0\.79"
+          echo "$OUTPUT" | grep -E "anthropic/claude-opus-4\.7.*0\.74"
+          echo "Stratified analysis reproduces published headline κ."
