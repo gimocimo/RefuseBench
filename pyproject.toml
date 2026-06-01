@@ -27,6 +27,12 @@ dev = ["pytest>=8.0.0", "pytest-asyncio>=0.23.0"]
 asyncio_mode = "auto"
 testpaths = ["tests"]
 filterwarnings = ["ignore::DeprecationWarning"]
+markers = [
+    "api: tests that call the OpenRouter API (costs $$; opt-in via `pytest -m api`)",
+]
+# By default, exclude API tests from runs. CI uses the default; on-demand
+# fixture validation uses `pytest -m api` or `pytest -m 'api or not api'`.
+addopts = "-m 'not api'"
 
 [project.scripts]
 refusebench = "refusebench.cli:app"
