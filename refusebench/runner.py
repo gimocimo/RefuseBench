@@ -65,6 +65,23 @@ SUMMARY_SUCCESS_THRESHOLD = 0.95
 
 
 def response_hash(text: str) -> str:
+    """SHA-256[:16] of the response text. Used as a cell key for calibration
+    labels and de-duplication.
+
+    Defensive guard: refuse to hash empty/whitespace-only text. The v0.3
+    audit found 4 responses with hash ``e3b0c44298fc1c14`` (SHA-256 of ``""``)
+    that collided in the calibration index. The upstream fix is in
+    ``models.chat_completion`` (v0.4), which raises ``EmptyResponseError`` on
+    empty content before this function is called. This guard is the
+    belt-and-suspenders: if a future code path ever bypasses the upstream
+    check, the failure is loud here rather than silent in the label-matching.
+    """
+    if not text or not text.strip():
+        raise ValueError(
+            "response_hash() received empty or whitespace-only text. "
+            "Empty completions must be caught upstream as EmptyResponseError; "
+            "they should never reach the hash step."
+        )
     return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
 
 
