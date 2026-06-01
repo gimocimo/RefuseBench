@@ -30,14 +30,27 @@ _global_sem_limit: int = 30
 
 
 class EmptyResponseError(Exception):
-    """Raised when the API returns a response with no usable completion choice.
+    """Raised when the API returns a response with no usable completion content.
 
-    OpenRouter occasionally returns HTTP 200 with an ``{"error": ...}`` body
-    (upstream provider outage, provider-side rate-limit, content filter)
-    instead of a normal completion. The OpenAI SDK parses that into a
-    ChatCompletion object with ``choices=None``. We treat this as transient
-    and let tenacity retry; a persistent failure exhausts retries and lands
-    in failures.json for `refusebench resume` to pick up.
+    Two known cases on OpenRouter:
+
+    1. **No choice / no message.** OpenRouter occasionally returns HTTP 200
+       with an ``{"error": ...}`` body (upstream provider outage,
+       provider-side rate-limit, content filter) instead of a completion.
+       The OpenAI SDK parses that into a ChatCompletion object with
+       ``choices=None`` (or, rarely, an empty list).
+
+    2. **Empty content.** The SDK returns a normal choice, but
+       ``choice.message.content`` is ``None`` or whitespace-only. This
+       happens when the provider returns a successful response with no text
+       (transient infra blip, ``finish_reason=null``/0 tokens) or when a
+       reasoning model exhausts ``max_tokens`` on internal reasoning and
+       emits no visible answer (``finish_reason="length"`` with empty
+       content). Either way the response is unusable for evaluation.
+
+    We treat both cases as transient and let tenacity retry; a persistent
+    failure exhausts retries and lands in failures.json for
+    ``refusebench resume`` to pick up.
     """
 
 
@@ -113,23 +126,34 @@ async def chat_completion(
         resp = await client.chat.completions.create(**kwargs)
         elapsed = time.monotonic() - t0
 
-    # OpenRouter can return HTTP 200 with an error payload instead of a
-    # completion; the SDK then yields choices=None (or, rarely, an empty
-    # list). Surface it as a retryable EmptyResponseError rather than letting
-    # `None[0]` raise an opaque TypeError.
+    # Empty-response detection. Two cases:
+    #   (a) choices is None / empty, or message is None  -> error payload disguised
+    #       as a 200, no completion at all
+    #   (b) message.content is None or whitespace-only   -> provider returned a
+    #       "successful" empty completion (zero-token blip, or a reasoning model
+    #       that burned max_tokens on internal reasoning and emitted no answer)
+    # Both surface as a retryable EmptyResponseError so tenacity backs off; if it
+    # persists, the cell ends up in failures.json for `refusebench resume`.
     choice = resp.choices[0] if resp.choices else None
-    if choice is None or choice.message is None:
+    content = choice.message.content if (choice and choice.message) else None
+
+    if choice is None or choice.message is None or not (content and content.strip()):
         err = getattr(resp, "error", None)
         detail = ""
         if isinstance(err, dict):
             detail = err.get("message") or json.dumps(err)
         elif err is not None:
             detail = str(err)
+        finish_reason = getattr(choice, "finish_reason", None) if choice else None
+        usage = getattr(resp, "usage", None)
+        completion_tokens = getattr(usage, "completion_tokens", None) if usage else None
+        cause = "no completion choice" if choice is None or choice.message is None else "empty content"
         raise EmptyResponseError(
-            f"No completion choice returned for model={model}"
+            f"{cause} for model={model} "
+            f"(finish_reason={finish_reason}, completion_tokens={completion_tokens})"
             + (f": {detail}" if detail else "")
         )
-    text = choice.message.content or ""
+    text = content
     usage = getattr(resp, "usage", None)
     provenance = {
         "model_requested": model,
