@@ -300,7 +300,10 @@ def display_cell(
     if not resp_text:
         resp_text = "[response text not found in responses.jsonl]"
     truncated = len(resp_text) > RESPONSE_PREVIEW_CHARS and not show_full
-    shown = resp_text[:RESPONSE_PREVIEW_CHARS] + ("…" if truncated else "")
+    if show_full or not truncated:
+        shown = resp_text
+    else:
+        shown = resp_text[:RESPONSE_PREVIEW_CHARS] + "…"
 
     print()
     print("═" * 88)
