@@ -19,8 +19,8 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 REPO = Path(__file__).resolve().parent.parent
-SUMMARY = REPO / "assets" / "v0.3" / "summary.json"
-OUT = REPO / "assets" / "v0.3" / "leaderboard_social.png"
+SUMMARY = REPO / "assets" / "v0.3.1" / "summary.json"
+OUT = REPO / "assets" / "v0.3.1" / "leaderboard_social.png"
 
 # palette
 INK = "#1a1a2e"
@@ -108,7 +108,7 @@ def main() -> None:
     fig.text(0.063, 0.917, "Do frontier LLMs honor the rules under pressure?",
              fontsize=25, fontweight="bold", color=INK, ha="left", va="top")
     fig.text(0.063, 0.860,
-             "RefuseBench v0.3 — rule-violation rate when a buried policy constraint gets "
+             "RefuseBench v0.3.1 — rule-violation rate when a buried policy constraint gets "
              "inconvenient.  Lower is better.",
              fontsize=14.5, color=MUTE, ha="left", va="top")
     fig.text(0.063, 0.816,
