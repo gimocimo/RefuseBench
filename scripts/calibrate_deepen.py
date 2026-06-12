@@ -210,11 +210,16 @@ def sample_cells_for_rule(
       - cells already labelled for this (scenario, rule, hash)
       - cells with is_invalid=true (no judge ran)
       - cells that don't have a rule_score for this rule_id
+      - empty-response cells (hash of "" — the 4 known v0.3 OpenRouter-blip
+        cells; there is no text to label, so they carry no calibration signal)
     """
     sid, rid = rule_key
+    EMPTY_RESPONSE_HASH = "e3b0c44298fc1c14"  # sha256("")[:16] — v0.3 blip cells
     rule_cells = []
     for c in cells:
         if c["scenario_id"] != sid:
+            continue
+        if c["response_hash"] == EMPTY_RESPONSE_HASH:
             continue
         rscores = c.get("rule_scores", [])
         rs = next((r for r in rscores if r["rule_id"] == rid), None)
