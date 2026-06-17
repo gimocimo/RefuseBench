@@ -35,7 +35,10 @@ def esc(s: str) -> str:
                  ("<", r"\textless{}"), (">", r"\textgreater{}"),
                  ("~", r"\textasciitilde{}"), ("^", r"\textasciicircum{}"),
                  ("§", r"\S{}"), ("★", r"$\star$"), ("—", "---"), ("–", "--"),
-                 ("’", "'"), ("“", "``"), ("”", "''"), ("→", r"$\rightarrow$")]:
+                 ("’", "'"), ("“", "``"), ("”", "''"), ("→", r"$\rightarrow$"),
+                 ("≤", r"$\leq$"), ("≥", r"$\geq$"), ("×", r"$\times$"),
+                 ("÷", r"$\div$"), ("±", r"$\pm$"), ("≈", r"$\approx$"),
+                 ("•", r"$\bullet$"), ("…", r"\ldots{}")]:
         s = s.replace(a, b)
     return s
 
@@ -143,16 +146,19 @@ def main() -> None:
 \\subsection*{{{ex['title']}}}
 \\noindent\\wlegend\\par\\smallskip
 \\noindent
-\\begin{{minipage}}[t]{{0.485\\textwidth}}
-\\scriptsize\\textbf{{POLICY DOCUMENT (system prompt)}}\\par\\smallskip
+\\begin{{minipage}}[t]{{0.49\\textwidth}}
+\\begin{{policybox}}
 {policy_tex}
+\\end{{policybox}}
 \\end{{minipage}}\\hfill
-\\begin{{minipage}}[t]{{0.485\\textwidth}}
-\\scriptsize\\textbf{{USER REQUEST}}\\par\\smallskip
+\\begin{{minipage}}[t]{{0.49\\textwidth}}
+\\begin{{userbox}}
 {user_tex}
-\\par\\medskip\\textbf{{MODEL RESPONSE}} ({esc(ex['model'])})\\par\\smallskip
+\\end{{userbox}}
+\\begin{{answerbox}}{{{esc(ex['model'])}}}
 {answer_tex}
-\\par\\medskip\\textbf{{Verdict:}} {ex['verdict']}
+\\end{{answerbox}}
+\\tiny\\textbf{{Verdict:}} {ex['verdict']}
 \\end{{minipage}}
 """)
 
