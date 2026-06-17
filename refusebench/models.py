@@ -80,6 +80,14 @@ def get_client() -> AsyncOpenAI:
             "HTTP-Referer": OPENROUTER_APP_URL,
             "X-Title": OPENROUTER_APP_NAME,
         },
+        # Per-request timeout. Without this the SDK default is 600s, so a single
+        # hung upstream call can block one of the (few) response-concurrency
+        # slots for ten minutes — in the v0.6 multi-turn run (3 sequential eval
+        # calls per cell, concurrency 6) that stalled the whole batch. 120s is
+        # generous for one turn; tenacity retries APITimeoutError with backoff.
+        # (max_retries left at the SDK default so transient 5xx still retry —
+        # every prior release ran with that.)
+        timeout=120.0,
     )
 
 
