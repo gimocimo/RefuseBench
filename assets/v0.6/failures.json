@@ -1,0 +1,14 @@
+{
+  "n_units": 99,
+  "n_failed": 1,
+  "success_rate": 0.98989898989899,
+  "failures": [
+    {
+      "scenario_id": "dba_latency_gate__multi_turn",
+      "model": "openai/gpt-5.5",
+      "trial": 1,
+      "error_type": "JSONDecodeError",
+      "error_message": "Expecting value: line 247 column 1 (char 1353)"
+    }
+  ]
+}
