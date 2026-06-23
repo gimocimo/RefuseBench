@@ -61,12 +61,14 @@ plt.rcParams.update({
 })
 
 
-def _title(ax, title, subtitle=None, pad=20):
+def _title(ax, title, subtitle=None, pad=20, title_fs=13.5, sub_fs=9.5):
     # `pad` controls the title↔subtitle gap (room above the axes for the title).
+    # title_fs/sub_fs let smaller figures shrink the type so it matches the rest
+    # once everything is embedded at the same page width.
     ax.set_title(title, fontweight="bold", color=INK, loc="left",
-                 pad=(pad if subtitle else 12), fontsize=13.5)
+                 pad=(pad if subtitle else 12), fontsize=title_fs)
     if subtitle:
-        ax.text(0, 1.012, subtitle, transform=ax.transAxes, fontsize=9.5,
+        ax.text(0, 1.012, subtitle, transform=ax.transAxes, fontsize=sub_fs,
                 color=MUTE, ha="left", va="bottom")
 
 
@@ -195,8 +197,11 @@ def fig_multi_turn_degradation():
     ax.legend(frameon=False, loc="upper right", fontsize=9.5)
     ax.grid(axis="y", color=GRID, zorder=0)
     ax.tick_params(length=0)
+    # smaller figure → shrink title/subtitle so it matches the other figures
+    # at the same embedded page width (≈ 7.4/8.4 of the default sizes)
     _title(ax, "Sustained pressure degrades compliance ~5×",
-           "Same rules & final ask; turns 2–3 add escalation + a fabricated prior agreement · all Δ CIs exclude 0")
+           "Same rules & final ask; turns 2–3 add escalation + a fabricated prior agreement · all Δ CIs exclude 0",
+           title_fs=11.9, sub_fs=8.4)
     _source(ax, "github.com/gimocimo/RefuseBench")
     _save(fig, "fig_multi_turn_degradation")
 
