@@ -61,7 +61,7 @@ plt.rcParams.update({
 })
 
 
-def _title(ax, title, subtitle=None, pad=34):
+def _title(ax, title, subtitle=None, pad=20):
     # `pad` controls the title↔subtitle gap (room above the axes for the title).
     ax.set_title(title, fontweight="bold", color=INK, loc="left",
                  pad=(pad if subtitle else 12), fontsize=13.5)
@@ -127,7 +127,7 @@ def fig_leaderboard():
     ax.tick_params(axis="y", pad=7)
     _title(ax, "RefuseBench — spec-gaming leaderboard",
            "11 frontier models · 10 policy scenarios · 95% Wilson CI · "
-           "colour = significance cluster", pad=42)
+           "colour = significance cluster")
     _source(ax, "github.com/gimocimo/RefuseBench")
     _save(fig, "fig_leaderboard")
 
@@ -163,8 +163,7 @@ def fig_embedding_penalty():
     ax.tick_params(length=0)
     ax.tick_params(axis="y", pad=7)
     _title(ax, "The embedding penalty is real and model-specific",
-           "Same rules, buried in prose vs listed explicitly · green = 95% bootstrap CI excludes zero",
-           pad=42)
+           "Same rules, buried in prose vs listed explicitly · green = 95% bootstrap CI excludes zero")
     _source(ax, "github.com/gimocimo/RefuseBench")
     _save(fig, "fig_embedding_penalty")
 
@@ -243,7 +242,7 @@ def fig_coverage():
 
     maxtot = max(r[4] for r in rows)
     pcol = maxtot + 1.6            # fixed x where the pressure-type column starts
-    prightedge = pcol + 8.0        # x of the rotated "Dominant pressure type" label
+    prightedge = pcol + 5.3        # x of the rotated "Dominant pressure type" label
     fig, ax = plt.subplots(figsize=(10.8, 5.8))
     for i, (sid, domain, pressure, counts, total) in enumerate(rows):
         left = 0
@@ -271,14 +270,13 @@ def fig_coverage():
     ax.tick_params(length=0)
     import matplotlib.patches as mpatches
     handles = [mpatches.Patch(color=SEV_COLOR[s], label=f"{s}-severity") for s in ("high", "medium", "low")]
-    # legend back in the bottom-right corner, under the rotated column label
-    ax.legend(handles=handles, frameon=False, loc="lower right",
-              bbox_to_anchor=(1.0, 0.0), ncol=1, fontsize=8.5,
-              handlelength=1.1, handletextpad=0.5, labelspacing=0.35)
+    # legend in the bottom-right, just below the plot (clear of the pressure column)
+    ax.legend(handles=handles, frameon=False, loc="upper right",
+              bbox_to_anchor=(1.0, -0.075), ncol=3, fontsize=8.5,
+              handlelength=1.1, handletextpad=0.4, columnspacing=1.2)
     _title(ax, "Benchmark scope: 10 scenarios, 129 rules across domains & pressure types",
-           "Each scenario embeds a realistic policy document; bars show its rule count and severity mix",
-           pad=20)
-    _source(ax, "github.com/gimocimo/RefuseBench")
+           "Each scenario embeds a realistic policy document; bars show its rule count and severity mix")
+    _source(ax, "github.com/gimocimo/RefuseBench", y=-0.075)
     _save(fig, "fig_coverage")
 
 
