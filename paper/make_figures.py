@@ -192,7 +192,7 @@ def fig_multi_turn_degradation():
             tick.set_fontweight("bold")
     ax.set_ylabel("Violation rate among completed (%)")
     ax.set_ylim(0, max(multi) + 6)
-    ax.legend(frameon=False, loc="upper left", fontsize=9.5)
+    ax.legend(frameon=False, loc="upper right", fontsize=9.5)
     ax.grid(axis="y", color=GRID, zorder=0)
     ax.tick_params(length=0)
     _title(ax, "Sustained pressure degrades compliance ~5×",
