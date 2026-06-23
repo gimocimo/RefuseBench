@@ -62,15 +62,24 @@ plt.rcParams.update({
 
 
 def _title(ax, title, subtitle=None):
-    ax.set_title(title, fontweight="bold", color=INK, loc="left", pad=14,
+    # Extra room above the axes for a clearly-separated title + subtitle.
+    pad = 34 if subtitle else 12
+    ax.set_title(title, fontweight="bold", color=INK, loc="left", pad=pad,
                  fontsize=13.5)
     if subtitle:
-        ax.text(0, 1.015, subtitle, transform=ax.transAxes, fontsize=9.5,
+        ax.text(0, 1.012, subtitle, transform=ax.transAxes, fontsize=9.5,
                 color=MUTE, ha="left", va="bottom")
 
 
 def _footer(fig, text):
     fig.text(0.012, 0.012, text, fontsize=7.5, color=MUTE, ha="left", va="bottom")
+
+
+def _source(ax, text):
+    """Place the source line under the plot, left edge aligned with the bars
+    (the axes' x=0 / left spine)."""
+    ax.text(0.0, -0.16, text, transform=ax.transAxes, fontsize=7.5,
+            color=MUTE, ha="left", va="top")
 
 
 def _save(fig, name):
@@ -111,16 +120,16 @@ def fig_leaderboard():
         ax.text(his[i] + 0.35, i, f"{r:.2f}%", va="center", ha="left",
                 fontsize=9, color=INK, fontweight="bold")
     ax.set_yticks(list(y))
-    ax.set_yticklabels(names)
+    ax.set_yticklabels(names, fontweight="bold")
     ax.invert_yaxis()
     ax.set_xlabel("Rule-violation rate among completed responses (%) — lower is better")
     ax.set_xlim(0, max(his) + 3)
     ax.grid(axis="x", color=GRID, zorder=0)
     ax.tick_params(length=0)
-    _title(ax, "RefuseBench v0.3.1 — spec-gaming leaderboard",
+    _title(ax, "RefuseBench — spec-gaming leaderboard",
            "11 frontier models · 10 policy scenarios · 95% Wilson CI · "
-           "colour = BH-significance tier")
-    _footer(fig, "Source: assets/v0.3.1/summary.json + pairwise_significance.json · github.com/gimocimo/RefuseBench")
+           "colour = significance cluster")
+    _source(ax, "github.com/gimocimo/RefuseBench")
     _save(fig, "fig_leaderboard")
 
 
@@ -145,13 +154,13 @@ def fig_embedding_penalty():
         ax.text(hi + 0.4, i, f"{p:+.1f}", va="center", ha="left", fontsize=9,
                 color=INK if s else MUTE, fontweight="bold" if s else "normal")
     ax.set_yticks(list(y))
-    ax.set_yticklabels(names)
+    ax.set_yticklabels(names, fontweight="bold")
     ax.set_xlabel("Embedding penalty (pp) = violation rate$_{embedded}$ − violation rate$_{foregrounded}$")
     ax.grid(axis="x", color=GRID, zorder=0)
     ax.tick_params(length=0)
     _title(ax, "The embedding penalty is real and model-specific",
            "Same rules, buried in prose vs listed explicitly · green = 95% bootstrap CI excludes zero")
-    _footer(fig, "Source: assets/v0.3.1/baseline_study_contemporaneous.json · github.com/gimocimo/RefuseBench")
+    _source(ax, "github.com/gimocimo/RefuseBench")
     _save(fig, "fig_embedding_penalty")
 
 
@@ -188,7 +197,7 @@ def fig_multi_turn_degradation():
     ax.tick_params(length=0)
     _title(ax, "Sustained pressure degrades compliance ~5×",
            "Same rules & final ask; turns 2–3 add escalation + a fabricated prior agreement · all Δ CIs exclude 0")
-    _footer(fig, "Source: assets/v0.6/multi_turn_study.json · github.com/gimocimo/RefuseBench")
+    _source(ax, "github.com/gimocimo/RefuseBench")
     _save(fig, "fig_multi_turn_degradation")
 
 
@@ -228,35 +237,41 @@ def fig_coverage():
     rows.sort(key=lambda r: r[4])  # ascending total → longest bar on top after invert
 
     maxtot = max(r[4] for r in rows)
-    pcol = maxtot + 1.8            # fixed x for the pressure-type column
-    fig, ax = plt.subplots(figsize=(10.4, 5.6))
-    y = range(len(rows))
+    pcol = maxtot + 1.6            # fixed x where the pressure-type column starts
+    prightedge = pcol + 11.0       # x of the rotated "Dominant pressure type" label
+    fig, ax = plt.subplots(figsize=(10.8, 5.8))
     for i, (sid, domain, pressure, counts, total) in enumerate(rows):
         left = 0
         for sev in ("high", "medium", "low"):
             ax.barh(i, counts[sev], left=left, color=SEV_COLOR[sev], height=0.6, zorder=3)
             left += counts[sev]
-        ax.text(left + 0.2, i, f"{total}", va="center", ha="left", fontsize=9,
-                fontweight="bold", color=INK)
-        ax.text(pcol, i, pressure, va="center", ha="left", fontsize=8, color=MUTE, style="italic")
-    ax.axvline(maxtot + 1.2, color=FAINT, lw=0.8, zorder=1)
-    ax.text(pcol, len(rows) - 0.3, "dominant pressure type", fontsize=8,
-            color=INK, ha="left", va="bottom", fontweight="bold")
-    ax.set_yticks(list(y))
-    ax.set_yticklabels([f"{r[0]}\n{r[1]}" for r in rows], fontsize=8.5)
+        # left labels: domain NAME (bold) above the scenario codename (grey)
+        ax.text(-0.4, i + 0.16, domain, va="center", ha="right", fontsize=9,
+                fontweight="bold", color=INK, clip_on=False)
+        ax.text(-0.4, i - 0.18, sid, va="center", ha="right", fontsize=7.5,
+                color=MUTE, clip_on=False)
+        # pressure-type entry (italic), in the right-hand column
+        ax.text(pcol, i, pressure, va="center", ha="left", fontsize=8.5,
+                color=MUTE, style="italic", clip_on=False)
+    ax.axvline(maxtot + 1.0, color=FAINT, lw=0.8, zorder=1)
+    # rotated column header at the far right
+    ax.text(prightedge, (len(rows) - 1) / 2, "Dominant pressure type", rotation=90,
+            va="center", ha="left", fontsize=9.5, fontweight="bold", color=INK, clip_on=False)
+    ax.set_yticks([])
     ax.set_xlabel("Number of rules (severity-coloured)")
     ax.set_xticks(list(range(0, maxtot + 1, 2)))
-    ax.set_xlim(0, pcol + 9.5)
-    ax.set_ylim(-0.6, len(rows) - 0.1)
+    ax.set_xlim(0, prightedge + 0.6)
+    ax.set_ylim(-0.6, len(rows) - 0.3)
     ax.grid(axis="x", color=GRID, zorder=0)
     ax.tick_params(length=0)
-    # legend
     import matplotlib.patches as mpatches
     handles = [mpatches.Patch(color=SEV_COLOR[s], label=f"{s}-severity") for s in ("high", "medium", "low")]
-    ax.legend(handles=handles, frameon=False, loc="lower right", fontsize=9)
+    ax.legend(handles=handles, frameon=False, loc="upper left",
+              bbox_to_anchor=(0.0, -0.13), ncol=3, fontsize=9)
     _title(ax, "Benchmark scope: 10 scenarios, 129 rules across domains & pressure types",
-           "Each scenario embeds a realistic policy; grey labels give the dominant pressure type")
-    _footer(fig, "Source: scenarios/*.yaml (rule counts + severity tags) · github.com/gimocimo/RefuseBench")
+           "Each scenario embeds a realistic policy document; bars show its rule count and severity mix")
+    ax.text(0.0, -0.24, "github.com/gimocimo/RefuseBench", transform=ax.transAxes,
+            fontsize=7.5, color=MUTE, ha="left", va="top")
     _save(fig, "fig_coverage")
 
 

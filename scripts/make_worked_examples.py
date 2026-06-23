@@ -147,11 +147,13 @@ def main() -> None:
 \\noindent\\wlegend\\par\\smallskip
 \\noindent
 \\begin{{minipage}}[t]{{0.49\\textwidth}}
+\\vspace*{{0pt}}
 \\begin{{policybox}}
 {policy_tex}
 \\end{{policybox}}
 \\end{{minipage}}\\hfill
 \\begin{{minipage}}[t]{{0.49\\textwidth}}
+\\vspace*{{0pt}}
 \\begin{{userbox}}
 {user_tex}
 \\end{{userbox}}
