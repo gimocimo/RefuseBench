@@ -61,11 +61,10 @@ plt.rcParams.update({
 })
 
 
-def _title(ax, title, subtitle=None):
-    # Extra room above the axes for a clearly-separated title + subtitle.
-    pad = 34 if subtitle else 12
-    ax.set_title(title, fontweight="bold", color=INK, loc="left", pad=pad,
-                 fontsize=13.5)
+def _title(ax, title, subtitle=None, pad=34):
+    # `pad` controls the title↔subtitle gap (room above the axes for the title).
+    ax.set_title(title, fontweight="bold", color=INK, loc="left",
+                 pad=(pad if subtitle else 12), fontsize=13.5)
     if subtitle:
         ax.text(0, 1.012, subtitle, transform=ax.transAxes, fontsize=9.5,
                 color=MUTE, ha="left", va="bottom")
@@ -75,10 +74,9 @@ def _footer(fig, text):
     fig.text(0.012, 0.012, text, fontsize=7.5, color=MUTE, ha="left", va="bottom")
 
 
-def _source(ax, text):
-    """Place the source line under the plot, left edge aligned with the bars
-    (the axes' x=0 / left spine)."""
-    ax.text(0.0, -0.16, text, transform=ax.transAxes, fontsize=7.5,
+def _source(ax, text, y=-0.12):
+    """Source line under the plot, left edge aligned with the bars (x=0)."""
+    ax.text(0.0, y, text, transform=ax.transAxes, fontsize=7.5,
             color=MUTE, ha="left", va="top")
 
 
@@ -126,9 +124,10 @@ def fig_leaderboard():
     ax.set_xlim(0, max(his) + 3)
     ax.grid(axis="x", color=GRID, zorder=0)
     ax.tick_params(length=0)
+    ax.tick_params(axis="y", pad=7)
     _title(ax, "RefuseBench — spec-gaming leaderboard",
            "11 frontier models · 10 policy scenarios · 95% Wilson CI · "
-           "colour = significance cluster")
+           "colour = significance cluster", pad=42)
     _source(ax, "github.com/gimocimo/RefuseBench")
     _save(fig, "fig_leaderboard")
 
@@ -151,15 +150,21 @@ def fig_embedding_penalty():
             error_kw=dict(ecolor=MUTE, lw=1.1, capsize=2.5, alpha=0.8), xerr=err)
     ax.axvline(0, color=INK, lw=1.0, zorder=4)
     for i, (p, hi, s) in enumerate(zip(pen, his, sig)):
-        ax.text(hi + 0.4, i, f"{p:+.1f}", va="center", ha="left", fontsize=9,
+        # Put the value to the right of the whisker; for all-negative bars
+        # (whisker right end <= 0) place it clear to the right of the zero line
+        # so it isn't swallowed by the bar.
+        lx = (hi + 0.4) if hi > 0 else 0.5
+        ax.text(lx, i, f"{p:+.1f}", va="center", ha="left", fontsize=9,
                 color=INK if s else MUTE, fontweight="bold" if s else "normal")
     ax.set_yticks(list(y))
     ax.set_yticklabels(names, fontweight="bold")
     ax.set_xlabel("Embedding penalty (pp) = violation rate$_{embedded}$ − violation rate$_{foregrounded}$")
     ax.grid(axis="x", color=GRID, zorder=0)
     ax.tick_params(length=0)
+    ax.tick_params(axis="y", pad=7)
     _title(ax, "The embedding penalty is real and model-specific",
-           "Same rules, buried in prose vs listed explicitly · green = 95% bootstrap CI excludes zero")
+           "Same rules, buried in prose vs listed explicitly · green = 95% bootstrap CI excludes zero",
+           pad=42)
     _source(ax, "github.com/gimocimo/RefuseBench")
     _save(fig, "fig_embedding_penalty")
 
@@ -238,7 +243,7 @@ def fig_coverage():
 
     maxtot = max(r[4] for r in rows)
     pcol = maxtot + 1.6            # fixed x where the pressure-type column starts
-    prightedge = pcol + 11.0       # x of the rotated "Dominant pressure type" label
+    prightedge = pcol + 8.0        # x of the rotated "Dominant pressure type" label
     fig, ax = plt.subplots(figsize=(10.8, 5.8))
     for i, (sid, domain, pressure, counts, total) in enumerate(rows):
         left = 0
@@ -266,12 +271,14 @@ def fig_coverage():
     ax.tick_params(length=0)
     import matplotlib.patches as mpatches
     handles = [mpatches.Patch(color=SEV_COLOR[s], label=f"{s}-severity") for s in ("high", "medium", "low")]
-    ax.legend(handles=handles, frameon=False, loc="upper left",
-              bbox_to_anchor=(0.0, -0.13), ncol=3, fontsize=9)
+    # legend back in the bottom-right corner, under the rotated column label
+    ax.legend(handles=handles, frameon=False, loc="lower right",
+              bbox_to_anchor=(1.0, 0.0), ncol=1, fontsize=8.5,
+              handlelength=1.1, handletextpad=0.5, labelspacing=0.35)
     _title(ax, "Benchmark scope: 10 scenarios, 129 rules across domains & pressure types",
-           "Each scenario embeds a realistic policy document; bars show its rule count and severity mix")
-    ax.text(0.0, -0.24, "github.com/gimocimo/RefuseBench", transform=ax.transAxes,
-            fontsize=7.5, color=MUTE, ha="left", va="top")
+           "Each scenario embeds a realistic policy document; bars show its rule count and severity mix",
+           pad=20)
+    _source(ax, "github.com/gimocimo/RefuseBench")
     _save(fig, "fig_coverage")
 
 
