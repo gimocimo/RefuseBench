@@ -66,3 +66,8 @@ codex_review_prompt.md
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Local Word export of the paper (private, not committed)
+paper/RefuseBench_paper.docx
+paper/.RefuseBench_export_baseline.md
+paper/RefuseBench_paper.pdf
