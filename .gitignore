@@ -71,3 +71,6 @@ htmlcov/
 paper/RefuseBench_paper.docx
 paper/.RefuseBench_export_baseline.md
 paper/RefuseBench_paper.pdf
+
+# Word lock/temp files
+paper/~$*.docx
