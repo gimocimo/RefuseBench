@@ -1,0 +1,150 @@
+\begin{thebibliography}{17}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Ahmed et~al.(2025)Ahmed, Klyman, Zeng, Koyejo, and
+  Liang]{ahmed2025speceval}
+Ahmed Ahmed, Kevin Klyman, Yi~Zeng, Sanmi Koyejo, and Percy Liang.
+\newblock {SpecEval}: Evaluating model adherence to behavior specifications.
+\newblock 2025.
+\newblock URL \url{https://arxiv.org/abs/2509.02464}.
+
+\bibitem[{Anthropic}(2026)]{anthropic2025constitution}
+{Anthropic}.
+\newblock Claude's new constitution.
+\newblock Anthropic, 2026.
+\newblock URL \url{https://www.anthropic.com/news/claude-new-constitution}.
+
+\bibitem[Barres et~al.(2025)Barres, Dong, Ray, Si, and
+  Narasimhan]{barres2025tau2bench}
+Victor Barres, Honghua Dong, Soham Ray, Xujie Si, and Karthik Narasimhan.
+\newblock $\tau^2$-bench: Evaluating conversational agents in a dual-control
+  environment.
+\newblock 2025.
+\newblock URL \url{https://arxiv.org/abs/2506.07982}.
+
+\bibitem[Cui et~al.(2024)Cui, Chiang, Stoica, and Hsieh]{cui2024orbench}
+Justin Cui, Wei-Lin Chiang, Ion Stoica, and Cho-Jui Hsieh.
+\newblock {OR-Bench}: An over-refusal benchmark for large language models.
+\newblock 2024.
+\newblock URL \url{https://arxiv.org/abs/2405.20947}.
+
+\bibitem[Jiang et~al.(2023)Jiang, Wang, Zeng, Zhong, Li, Mi, Shang, Jiang, Liu,
+  and Wang]{jiang2023followbench}
+Yuxin Jiang, Yufei Wang, Xingshan Zeng, Wanjun Zhong, Liangyou Li, Fei Mi,
+  Lifeng Shang, Xin Jiang, Qun Liu, and Wei Wang.
+\newblock {FollowBench}: A multi-level fine-grained constraints following
+  benchmark for large language models.
+\newblock 2023.
+\newblock URL \url{https://arxiv.org/abs/2310.20410}.
+
+\bibitem[{OpenAI}(2024)]{openai2024modelspec}
+{OpenAI}.
+\newblock Model spec.
+\newblock OpenAI, 2024.
+\newblock URL \url{https://cdn.openai.com/spec/model-spec-2024-05-08.html}.
+\newblock First draft released 2024-05-08.
+
+\bibitem[Pyatkin et~al.(2025)Pyatkin, Malik, Graf, Ivison, Huang, Dasigi,
+  Lambert, and Hajishirzi]{pyatkin2025ifbench}
+Valentina Pyatkin, Saumya Malik, Victoria Graf, Hamish Ivison, Shengyi Huang,
+  Pradeep Dasigi, Nathan Lambert, and Hannaneh Hajishirzi.
+\newblock Generalizing verifiable instruction following.
+\newblock 2025.
+\newblock URL \url{https://arxiv.org/abs/2507.02833}.
+
+\bibitem[Qin et~al.(2024{\natexlab{a}})Qin, Zhang, Shen, Luo, Sun, Wang, Qiao,
+  Xu, Zhou, Lin, Pang, Huang, Zhang, and Li]{qin2024sysbench}
+Yanzhao Qin, Tao Zhang, Tao Shen, Wenjing Luo, Haoze Sun, Yan Wang, Yujing
+  Qiao, Weipeng Xu, Daxin Zhou, Wenyuan Lin, Tianpeng Pang, Zheng Huang, Mingan
+  Zhang, and Guosheng Li.
+\newblock {SysBench}: Can large language models follow system messages?
+\newblock 2024{\natexlab{a}}.
+\newblock URL \url{https://arxiv.org/abs/2408.10943}.
+
+\bibitem[Qin et~al.(2024{\natexlab{b}})Qin, Song, Hu, Yao, Cho, Wang, Wu, Liu,
+  Liu, and Yu]{qin2024infobench}
+Yiwei Qin, Kaiqiang Song, Yebowen Hu, Wenlin Yao, Sangwoo Cho, Xiaoyang Wang,
+  Xuansheng Wu, Fei Liu, Pengfei Liu, and Dong Yu.
+\newblock {InFoBench}: Evaluating instruction following ability in large
+  language models.
+\newblock 2024{\natexlab{b}}.
+\newblock URL \url{https://arxiv.org/abs/2401.03601}.
+
+\bibitem[Ren et~al.(2025)Ren, Agarwal, Mazeika, Menghini, Vacareanu, Kenstler,
+  Yang, Barrass, Gatti, Yin, Trevino, Geralnik, Khoja, Lee, Yue, and
+  Hendrycks]{ren2025mask}
+Richard Ren, Arunim Agarwal, Mantas Mazeika, Cristina Menghini, Robert
+  Vacareanu, Brad Kenstler, Mick Yang, Isabelle Barrass, Alice Gatti, Xuwang
+  Yin, Eduardo Trevino, Matias Geralnik, Adam Khoja, Dean Lee, Summer Yue, and
+  Dan Hendrycks.
+\newblock The {MASK} benchmark: Disentangling honesty from accuracy in {AI}
+  systems.
+\newblock 2025.
+\newblock URL \url{https://arxiv.org/abs/2503.03750}.
+
+\bibitem[R\"{o}ttger et~al.(2023)R\"{o}ttger, Kirk, Vidgen, Attanasio, Bianchi,
+  and Hovy]{rottger2023xstest}
+Paul R\"{o}ttger, Hannah~Rose Kirk, Bertie Vidgen, Giuseppe Attanasio, Federico
+  Bianchi, and Dirk Hovy.
+\newblock {XSTest}: A test suite for identifying exaggerated safety behaviours
+  in large language models.
+\newblock 2023.
+\newblock URL \url{https://arxiv.org/abs/2308.01263}.
+
+\bibitem[Sharma et~al.(2023)Sharma, Tong, Korbak, Duvenaud, Askell, Bowman,
+  Cheng, Durmus, Hatfield-Dodds, Johnston, Kravec, Maxwell, McCandlish,
+  Ndousse, Rausch, Schiefer, Yan, Zhang, and Perez]{sharma2023sycophancy}
+Mrinank Sharma, Meg Tong, Tomasz Korbak, David Duvenaud, Amanda Askell,
+  Samuel~R. Bowman, Newton Cheng, Esin Durmus, Zac Hatfield-Dodds, Scott~R.
+  Johnston, Shauna Kravec, Timothy Maxwell, Sam McCandlish, Kamal Ndousse,
+  Oliver Rausch, Nicholas Schiefer, Da~Yan, Miranda Zhang, and Ethan Perez.
+\newblock Towards understanding sycophancy in language models.
+\newblock 2023.
+\newblock URL \url{https://arxiv.org/abs/2310.13548}.
+
+\bibitem[Skalse et~al.(2022)Skalse, Howe, Krasheninnikov, and
+  Krueger]{skalse2022reward}
+Joar Skalse, Nikolaus H.~R. Howe, Dmitrii Krasheninnikov, and David Krueger.
+\newblock Defining and characterizing reward hacking.
+\newblock 2022.
+\newblock URL \url{https://arxiv.org/abs/2209.13085}.
+
+\bibitem[Wallace et~al.(2024)Wallace, Xiao, Leike, Weng, Heidecke, and
+  Beutel]{wallace2024hierarchy}
+Eric Wallace, Kai Xiao, Reimar Leike, Lilian Weng, Johannes Heidecke, and Alex
+  Beutel.
+\newblock The instruction hierarchy: Training {LLMs} to prioritize privileged
+  instructions.
+\newblock 2024.
+\newblock URL \url{https://arxiv.org/abs/2404.13208}.
+
+\bibitem[Wen et~al.(2024)Wen, Ke, Gu, Wu, Huang, Zhou, Li, Hu, Gao, Xu, Liu,
+  Tang, Wang, and Huang]{wen2024complexbench}
+Bosi Wen, Pei Ke, Xiaotao Gu, Lindong Wu, Hao Huang, Jinfeng Zhou, Wenchuang
+  Li, Binxin Hu, Wendy Gao, Jiaxin Xu, Yiming Liu, Jie Tang, Hongning Wang, and
+  Minlie Huang.
+\newblock Benchmarking complex instruction-following with multiple constraints
+  composition.
+\newblock 2024.
+\newblock URL \url{https://arxiv.org/abs/2407.03978}.
+
+\bibitem[Yao et~al.(2024)Yao, Shinn, Razavi, and Narasimhan]{yao2024taubench}
+Shunyu Yao, Noah Shinn, Pedram Razavi, and Karthik Narasimhan.
+\newblock $\tau$-bench: A benchmark for tool-agent-user interaction in
+  real-world domains.
+\newblock 2024.
+\newblock URL \url{https://arxiv.org/abs/2406.12045}.
+
+\bibitem[Zhou et~al.(2023)Zhou, Lu, Mishra, Brahma, Basu, Luan, Zhou, and
+  Hou]{zhou2023ifeval}
+Jeffrey Zhou, Tianjian Lu, Swaroop Mishra, Siddhartha Brahma, Sujoy Basu,
+  Yi~Luan, Denny Zhou, and Le~Hou.
+\newblock Instruction-following evaluation for large language models.
+\newblock 2023.
+\newblock URL \url{https://arxiv.org/abs/2311.07911}.
+
+\end{thebibliography}
